@@ -43,13 +43,43 @@ def webhook():
     price = data.get("price", "N/A")
     tf = data.get("timeframe", "N/A")
 
-    msg = f"""
-TEST MESSAGE
+    if signal == "EARLY SHARK DETECTED":
 
-{signal}
-{ticker}
-{price}
-{tf}
+    msg = f"""
+╔══════════════════════╗
+🟡 <b>EARLY INSTITUTIONAL SIGNAL</b>
+╚══════════════════════╝
+
+📊 Pair      : <b>{ticker}</b>
+💰 Price     : <b>{price}</b>
+⏱ Timeframe : <b>{tf}</b>
+
+━━━━━━━━━━━━━━━━━━
+
+🧠 Status
+<code>PRE-ENTRY DETECTED</code>
+
+⚠️ Risk
+MEDIUM
+
+🎯 Action
+WAIT FOR CONFIRMATION
+
+━━━━━━━━━━━━━━━━━━
+
+⚡ Smart Money detected.
+Entry confirmation still pending.
+"""
+
+else:
+    msg = f"""
+📊 {ticker}
+
+Signal : {signal}
+
+Price : {price}
+
+TF : {tf}
 """
 
     send_message(msg)
