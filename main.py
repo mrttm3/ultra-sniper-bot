@@ -24,19 +24,38 @@ def send_message(text):
 def home():
     return "Ultra Sniper Bot Running!"
 
-
 @app.route("/webhook", methods=["POST"])
 def webhook():
 
-    # Jika TradingView hantar teks biasa
-    if not request.is_json:
-        raw = request.get_data(as_text=True)
+    raw = request.get_data(as_text=True)
+    print("RAW INPUT:", raw)
 
-        print(raw)
+    try:
+        data = request.get_json(force=True)
+    except Exception as e:
+        print("JSON ERROR:", e)
+        data = {}
 
-        send_message(raw)
+    print("PARSED JSON:", data)
 
-        return {"status": "text received"}, 200
+    signal = data.get("signal", "UNKNOWN")
+    ticker = data.get("ticker", "N/A")
+    price = data.get("price", "N/A")
+    tf = data.get("timeframe", "N/A")
+
+    msg = f"""
+TEST MESSAGE
+
+{signal}
+{ticker}
+{price}
+{tf}
+"""
+
+    send_message(msg)
+
+    return {"status": "ok"}, 200
+
 
     # Jika TradingView hantar JSON
     data = request.json or {}
