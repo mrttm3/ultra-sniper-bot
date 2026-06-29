@@ -26,64 +26,46 @@ def home():
 
 @app.route("/webhook", methods=["POST"])
 def webhook():
+    data = request.get_json(force=True)
 
-    raw = request.get_data(as_text=True)
-    print("RAW INPUT:", raw)
-
-    try:
-        data = request.get_json(force=True)
-    except Exception as e:
-        print("JSON ERROR:", e)
-        data = {}
-
-    print("PARSED JSON:", data)
-
-    signal = data.get("signal", "UNKNOWN")
+    signal = data.get("signal", "").upper()
     ticker = data.get("ticker", "N/A")
     price = data.get("price", "N/A")
     tf = data.get("timeframe", "N/A")
 
+    tf_map = {
+        "1": "1m",
+        "3": "3m",
+        "5": "5m",
+        "15": "15m",
+        "30": "30m",
+        "60": "1H",
+        "240": "4H",
+        "D": "1D",
+        "W": "1W",
+        "M": "1M"
+    }
+    tf = tf_map.get(str(tf), str(tf))
+
     if signal == "EARLY SHARK DETECTED":
+        msg = f"""🟡 <b>EARLY INSTITUTIONAL SIGNAL</b>
 
-    msg = f"""
-╔══════════════════════╗
-🟡 <b>EARLY INSTITUTIONAL SIGNAL</b>
-╚══════════════════════╝
+📊 Pair : <b>{ticker}</b>
+💰 Price : <b>{price}</b>
+⏱ TF : <b>{tf}</b>
 
-📊 Pair      : <b>{ticker}</b>
-💰 Price     : <b>{price}</b>
-⏱ Timeframe : <b>{tf}</b>
+🧠 Status : PRE-ENTRY
+⚠️ Risk : MEDIUM
+🎯 Action : WAIT CONFIRMATION"""
 
-━━━━━━━━━━━━━━━━━━
-
-🧠 Status
-<code>PRE-ENTRY DETECTED</code>
-
-⚠️ Risk
-MEDIUM
-
-🎯 Action
-WAIT FOR CONFIRMATION
-
-━━━━━━━━━━━━━━━━━━
-
-⚡ Smart Money detected.
-Entry confirmation still pending.
-"""
-
-else:
-    msg = f"""
-📊 {ticker}
+    else:
+        msg = f"""📊 {ticker}
 
 Signal : {signal}
-
 Price : {price}
-
-TF : {tf}
-"""
+TF : {tf}"""
 
     send_message(msg)
-
     return {"status": "ok"}, 200
 
 
