@@ -22,62 +22,100 @@ def send_message(text):
 
 @app.route("/")
 def home():
-    return "Bot is running!"
+    return "Ultra Sniper Bot Running!"
 
 
 @app.route("/webhook", methods=["POST"])
 def webhook():
+
+    # Jika TradingView hantar teks biasa
+    if not request.is_json:
+        raw = request.get_data(as_text=True)
+
+        print(raw)
+
+        send_message(raw)
+
+        return {"status": "text received"}, 200
+
+    # Jika TradingView hantar JSON
     data = request.json or {}
 
-    print("DATA RECEIVED:", data)
+    print(data)
 
-    signal = data.get("signal", "Unknown").upper()
+    signal = data.get("signal", "").upper()
     ticker = data.get("ticker", "N/A")
-    tf = data.get("timeframe", "N/A")
     price = data.get("price", "N/A")
+    tf = data.get("timeframe", "N/A")
 
-    if signal == "CANDLE_KUNING":
-        msg = f"""🟡 <b>CANDLE KUNING</b>
+    if signal == "EARLY SHARK DETECTED":
 
-Ticker: {ticker}
-TF: {tf}
-Price: {price}
-
-Breakout detected"""
-
-    elif signal == "SHARK_IN":
-        msg = f"""🦈 <b>SHARK IN</b>
-
-Ticker: {ticker}
-TF: {tf}
-Price: {price}
-
-Early institutional activity"""
-
-    elif signal == "EARLY SHARK DETECTED":
         msg = f"""
-╔══════════════════════════════╗
-        EARLY INSTITUTIONAL SIGNAL
-╚══════════════════════════════╝
+🟡 <b>EARLY INSTITUTIONAL SIGNAL</b>
 
-🟡 Type: PRE-ENTRY
-📊 Ticker: {ticker}
-💰 Price: {price}
-⏱ Timeframe: {tf}
+━━━━━━━━━━━━━━
 
-⚠️ Risk: MEDIUM
-🎯 Action: WAIT CONFIRMATION
+📊 Pair : <b>{ticker}</b>
+💰 Price : <b>{price}</b>
+⏱ TF : <b>{tf}</b>
 
-🧠 Note: Setup detected, waiting confirmation
+━━━━━━━━━━━━━━
+
+🧠 Status : PRE-ENTRY SIGNAL
+
+⚠️ Risk : MEDIUM
+
+📍 Action : WAIT CONFIRMATION
+"""
+
+    elif signal == "SHARK IN":
+
+        msg = f"""
+🦈 <b>SHARK IN</b>
+
+📊 Pair : <b>{ticker}</b>
+
+💰 Price : <b>{price}</b>
+
+⏱ TF : <b>{tf}</b>
+
+🔥 Institutional Buying Detected
+"""
+
+    elif signal == "BUY":
+
+        msg = f"""
+🟢 <b>BUY SIGNAL</b>
+
+📊 Pair : <b>{ticker}</b>
+
+💰 Entry : <b>{price}</b>
+
+⏱ TF : <b>{tf}</b>
+
+✅ Momentum Confirmed
+"""
+
+    elif signal == "SELL":
+
+        msg = f"""
+🔴 <b>SELL SIGNAL</b>
+
+📊 Pair : <b>{ticker}</b>
+
+💰 Entry : <b>{price}</b>
+
+⏱ TF : <b>{tf}</b>
+
+⚠️ Bearish Momentum
 """
 
     else:
-        msg = f"""⚠️ Unknown signal
 
-Ticker: {ticker}
-
-Raw:
-{data}"""
+        if "message" in data:
+            msg = data["message"]
+        else:
+            msg = str(data)
 
     send_message(msg)
 
