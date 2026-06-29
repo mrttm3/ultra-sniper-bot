@@ -55,7 +55,7 @@ Price: {price}
 Early institutional activity"""
 
     elif signal == "EARLY SHARK DETECTED":
-        message = f"""
+    msg = f"""
 ╔══════════════════════════════╗
         EARLY INSTITUTIONAL SIGNAL
 ╚══════════════════════════════╝
@@ -65,8 +65,8 @@ Early institutional activity"""
 💰 Price: {price}
 ⏱ Timeframe: {tf}
 
-⚠️ Risk: {risk}
-🎯 Action: {action}
+⚠️ Risk: MEDIUM
+🎯 Action: WAIT CONFIRMATION
 
 🧠 Note: Setup detected, waiting confirmation
 """
