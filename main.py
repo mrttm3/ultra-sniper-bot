@@ -40,11 +40,16 @@ TF: {tf}
 
 Early institutional activity"""
 
-    elif signal == "EARLY":
+    elif signal == "EARLY SHARK DETECTED":
         msg = f"""🔵 <b>EARLY ALERT</b>
 
 Ticker: {ticker}
+Price : {close}
 TF: {tf}
+-----------------------------------
+Status: PRE-ENTRY SIGNAL
+Risk: MEDIUM (NO CONFIRMATION YET)
+Action: WAIT CONFIRMATION
 
 Watchlist only"""
 
