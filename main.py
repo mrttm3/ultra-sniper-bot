@@ -55,7 +55,7 @@ Price: {price}
 Early institutional activity"""
 
     elif signal == "EARLY SHARK DETECTED":
-    msg = f"""
+        msg = f"""
 ╔══════════════════════════════╗
         EARLY INSTITUTIONAL SIGNAL
 ╚══════════════════════════════╝
